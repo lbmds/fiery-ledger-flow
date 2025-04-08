@@ -41,7 +41,12 @@ const Login = () => {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      const { error } = await login(data);
+      // Ensure both email and password are provided
+      const { email, password } = data;
+      const { error } = await login({ 
+        email: email,
+        password: password 
+      });
       if (error) throw error;
     } catch (error) {
       console.error("Login error:", error);

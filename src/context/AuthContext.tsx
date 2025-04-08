@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     checkUser();
 
-    const { data: subscription } = authService.onAuthStateChange(
+    const { data: authListener } = authService.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
         setIsLoading(false);
@@ -57,7 +57,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     return () => {
-      subscription?.unsubscribe();
+      if (authListener) {
+        authListener.subscription.unsubscribe();
+      }
     };
   }, [navigate]);
 
