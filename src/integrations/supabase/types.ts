@@ -139,7 +139,9 @@ export type Database = {
         Returns: undefined
       }
       get_monthly_summary: {
-        Args: { user_id: string; year: number; month: number }
+        Args:
+          | { user_id: string; year: number; month: number }
+          | Record<PropertyKey, never>
         Returns: {
           total_income: number
           total_expense: number
