@@ -1,4 +1,3 @@
-
 import { supabase, Bill } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 
@@ -25,13 +24,18 @@ export const billService = {
 
   async createBill(bill: Omit<Bill, 'id' | 'user_id' | 'created_at'>): Promise<Bill | null> {
     try {
+      console.log('Creating bill with data:', bill);
+      
       const { data, error } = await supabase
         .from('bills')
         .insert([bill])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error details:', error);
+        throw error;
+      }
       
       toast({
         title: "Conta a pagar registrada",
