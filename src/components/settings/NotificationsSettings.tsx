@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { profileService } from '@/services/profileService';
 
 type NotificationSettings = {
   billReminders: boolean;
@@ -29,11 +29,7 @@ export function NotificationsSettings() {
       
       try {
         setIsLoading(true);
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('notification_settings')
-          .eq('id', user.id)
-          .single();
+        const { data, error } = await profileService.getProfile(user.id);
           
         if (error) throw error;
         
@@ -56,26 +52,9 @@ export function NotificationsSettings() {
     setIsLoading(true);
     
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          notification_settings: settings 
-        })
-        .eq('id', user.id);
-        
-      if (error) throw error;
-      
-      toast({
-        title: 'Configurações salvas',
-        description: 'Suas preferências de notificação foram atualizadas.',
-      });
+      await profileService.updateNotificationSettings(user.id, settings);
     } catch (error) {
       console.error('Error saving notification settings:', error);
-      toast({
-        title: 'Erro ao salvar',
-        description: 'Não foi possível salvar suas preferências.',
-        variant: 'destructive',
-      });
     } finally {
       setIsLoading(false);
     }
