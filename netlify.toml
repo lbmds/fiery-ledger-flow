@@ -5,10 +5,25 @@
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization, x-client-info, apikey"
     Access-Control-Allow-Credentials = "true"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co https://tcikxgcyrvildjvxffhh.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://tcikxgcyrvildjvxffhh.supabase.co; connect-src 'self' https://tcikxgcyrvildjvxffhh.supabase.co wss://tcikxgcyrvildjvxffhh.supabase.co; frame-src 'self' https://tcikxgcyrvildjvxffhh.supabase.co;"
+    Content-Security-Policy = "default-src 'self' https://tcikxgcyrvildjvxffhh.supabase.co; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co https://tcikxgcyrvildjvxffhh.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://tcikxgcyrvildjvxffhh.supabase.co; connect-src 'self' https://tcikxgcyrvildjvxffhh.supabase.co wss://tcikxgcyrvildjvxffhh.supabase.co; frame-src 'self' https://tcikxgcyrvildjvxffhh.supabase.co;"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "font/woff2"
 
 [[redirects]]
   from = "/*"
