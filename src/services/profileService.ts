@@ -56,8 +56,8 @@ export const profileService = {
     try {
       // Generate a unique file name
       const fileExt = file.name.split('.').pop();
-      const fileName = `${userId}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
+      const fileName = `${userId}/${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${fileName}`;
 
       // Upload the file
       const { error: uploadError } = await supabase.storage
