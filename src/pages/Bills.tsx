@@ -37,16 +37,21 @@ const Bills = () => {
       return;
     }
 
-    const newBill = {
+    // Criar objeto com campos básicos
+    const billData: any = {
       description,
       amount: parseFloat(amount),
       due_date: dueDate,
       status: status as 'pending' | 'paid',
-      recurrent,
-      frequency: recurrent ? frequency as 'monthly' | 'weekly' | 'yearly' : null
+      recurrent
     };
+    
+    // Adicionar frequency apenas se for recorrente
+    if (recurrent) {
+      billData.frequency = frequency;
+    }
 
-    const createdBill = await billService.createBill(newBill);
+    const createdBill = await billService.createBill(billData);
     if (createdBill) {
       setDescription("");
       setAmount("");
