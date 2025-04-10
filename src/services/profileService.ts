@@ -5,11 +5,6 @@ import { toast } from '@/hooks/use-toast';
 export type ProfileData = {
   name?: string;
   avatar_url?: string;
-  notification_settings?: {
-    billReminders: boolean;
-    monthlyReports: boolean;
-    budgetAlerts: boolean;
-  };
 };
 
 export const profileService = {
@@ -102,38 +97,6 @@ export const profileService = {
       toast({
         title: 'Erro ao fazer upload do avatar',
         description: error?.message || 'Ocorreu um erro ao atualizar sua foto de perfil.',
-        variant: 'destructive',
-      });
-      return { data: null, error };
-    }
-  },
-  
-  async updateNotificationSettings(userId: string, settings: {
-    billReminders: boolean;
-    monthlyReports: boolean;
-    budgetAlerts: boolean;
-  }) {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .update({ notification_settings: settings })
-        .eq('id', userId)
-        .select()
-        .single();
-
-      if (error) throw error;
-      
-      toast({
-        title: 'Configurações de notificação atualizadas',
-        description: 'Suas preferências de notificação foram atualizadas com sucesso.',
-      });
-
-      return { data, error: null };
-    } catch (error: any) {
-      console.error('Error updating notification settings:', error);
-      toast({
-        title: 'Erro ao atualizar configurações',
-        description: error?.message || 'Ocorreu um erro ao atualizar suas preferências de notificação.',
         variant: 'destructive',
       });
       return { data: null, error };

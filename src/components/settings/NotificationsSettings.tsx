@@ -1,11 +1,9 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
-import { profileService } from '@/services/profileService';
 
 type NotificationSettings = {
   billReminders: boolean;
@@ -14,7 +12,6 @@ type NotificationSettings = {
 };
 
 export function NotificationsSettings() {
-  const { toast } = useToast();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState<NotificationSettings>({
@@ -23,36 +20,12 @@ export function NotificationsSettings() {
     budgetAlerts: true,
   });
 
-  useEffect(() => {
-    const loadSettings = async () => {
-      if (!user) return;
-      
-      try {
-        setIsLoading(true);
-        const { data, error } = await profileService.getProfile(user.id);
-          
-        if (error) throw error;
-        
-        if (data && data.notification_settings) {
-          setSettings(data.notification_settings as NotificationSettings);
-        }
-      } catch (error) {
-        console.error('Error loading notification settings:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadSettings();
-  }, [user]);
-
   const handleSaveSettings = async () => {
-    if (!user) return;
-    
     setIsLoading(true);
     
     try {
-      await profileService.updateNotificationSettings(user.id, settings);
+      console.log("Preferências de notificação salvas:", settings);
+      // As notificações foram removidas, mas mantemos a interface para futuras implementações
     } catch (error) {
       console.error('Error saving notification settings:', error);
     } finally {
