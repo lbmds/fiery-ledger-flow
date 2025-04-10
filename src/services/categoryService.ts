@@ -1,13 +1,21 @@
-
 import { supabase, Category } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 
 export const categoryService = {
   async getCategories(): Promise<Category[]> {
     try {
+      // Verificar se há um usuário autenticado
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      const userId = session.session.user.id;
+
       const { data, error } = await supabase
         .from('categories')
         .select('*')
+        .eq('user_id', userId)
         .order('name', { ascending: true });
 
       if (error) throw error;
@@ -25,9 +33,20 @@ export const categoryService = {
 
   async createCategory(category: Omit<Category, 'id' | 'user_id' | 'created_at'>): Promise<Category | null> {
     try {
+      // Obter o ID do usuário atual
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      const userId = session.session.user.id;
+
       const { data, error } = await supabase
         .from('categories')
-        .insert([category])
+        .insert([{
+          ...category,
+          user_id: userId
+        }])
         .select()
         .single();
 

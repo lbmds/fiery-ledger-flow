@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,10 +65,10 @@ const Transactions = () => {
       amount: parseFloat(amount),
       description,
       date,
-      type,
+      type: type as 'income' | 'expense',
       category_id: categoryId,
       account_id: accountId,
-      status
+      status: 'completed'
     };
 
     const createdTransaction = await transactionService.createTransaction(newTransaction);

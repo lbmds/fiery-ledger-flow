@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { 
@@ -10,12 +9,14 @@ import {
   BarChart4, 
   Settings, 
   Menu,
-  X 
+  X,
+  LogOut
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/context/AuthContext";
 
 interface NavItemProps {
   href: string;
@@ -45,6 +46,7 @@ export function Sidebar() {
   const location = useLocation();
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
 
   useEffect(() => {
     if (isMobile) {
@@ -63,6 +65,10 @@ export function Sidebar() {
     { href: "/reports", icon: BarChart4, title: "Relatórios" },
     { href: "/settings", icon: Settings, title: "Configurações" },
   ];
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   if (isMobile && !isOpen) {
     return (
@@ -107,6 +113,15 @@ export function Sidebar() {
             isActive={location.pathname === item.href}
           />
         ))}
+        
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-2 px-4 text-red-500 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/20 mt-4"
+          onClick={handleLogout}
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Sair</span>
+        </Button>
       </nav>
 
       <div className="p-4 border-t border-border flex items-center justify-between">

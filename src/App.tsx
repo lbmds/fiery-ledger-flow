@@ -50,7 +50,7 @@ const AppContent = () => (
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.MODE === 'production' ? '/fiery-ledger-flow' : '/'}>
       <AuthProvider>
         <ThemeProvider defaultTheme="light">
           <TooltipProvider>

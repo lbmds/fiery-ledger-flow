@@ -1,0 +1,11 @@
+{
+  "headers": {
+    "/*": {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co https://tcikxgcyrvildjvxffhh.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://tcikxgcyrvildjvxffhh.supabase.co; connect-src 'self' https://tcikxgcyrvildjvxffhh.supabase.co wss://tcikxgcyrvildjvxffhh.supabase.co; frame-src 'self' https://tcikxgcyrvildjvxffhh.supabase.co;",
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    }
+  }
+} 

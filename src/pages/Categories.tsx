@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,7 +34,7 @@ const Categories = () => {
     const newCategory = {
       name,
       color,
-      type
+      type: type as 'income' | 'expense'
     };
 
     const createdCategory = await categoryService.createCategory(newCategory);

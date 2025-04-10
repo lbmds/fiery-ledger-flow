@@ -1,11 +1,7 @@
+import { supabase } from '@/integrations/supabase/client';
 
-import { createClient } from '@supabase/supabase-js';
-
-// Use the Supabase URL and key from the integration
-const supabaseUrl = "https://tcikxgcyrvildjvxffhh.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjaWt4Z2N5cnZpbGRqdnhmZmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxMzg4NTUsImV4cCI6MjA1OTcxNDg1NX0.YuSbXEx-ePtXD3kZvVRI3uhySerHWcjrBIL2e6uJRF8";
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Re-exportamos o supabase para manter compatibilidade
+export { supabase };
 
 // Definições de tipos para nossas tabelas
 export type Account = {
@@ -28,7 +24,7 @@ export type Category = {
 };
 
 export type Transaction = {
-  id: string;
+  id: number;
   user_id: string;
   amount: number;
   date: string;
@@ -38,6 +34,8 @@ export type Transaction = {
   account_id: string;
   status: 'completed' | 'pending';
   created_at: string;
+  categoryName?: string | null;
+  accountName?: string | null;
 };
 
 export type Bill = {

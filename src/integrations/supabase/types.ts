@@ -9,6 +9,63 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      accounts: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          balance: number
+          type: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          balance: number
+          type: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          balance?: number
+          type?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          color: string
+          type: 'income' | 'expense'
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          color: string
+          type: 'income' | 'expense'
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          color?: string
+          type?: 'income' | 'expense'
+          created_at?: string
+        }
+        Relationships: []
+      }
       bills: {
         Row: {
           amount: number
@@ -107,17 +164,25 @@ export type Database = {
           amount: number
           created_at: string
           date: string
+          description: string
+          category_id: string
+          account_id: string
+          status: 'completed' | 'pending'
           id: number
-          type: string
+          type: 'income' | 'expense'
           updated_at: string
           user_id: string
         }
         Insert: {
           amount: number
           created_at?: string
-          date?: string
+          date: string
+          description: string
+          category_id: string
+          account_id: string
+          status: 'completed' | 'pending'
           id?: never
-          type: string
+          type: 'income' | 'expense'
           updated_at?: string
           user_id: string
         }
@@ -125,8 +190,12 @@ export type Database = {
           amount?: number
           created_at?: string
           date?: string
+          description?: string
+          category_id?: string
+          account_id?: string
+          status?: 'completed' | 'pending'
           id?: never
-          type?: string
+          type?: 'income' | 'expense'
           updated_at?: string
           user_id?: string
         }

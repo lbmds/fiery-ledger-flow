@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +17,7 @@ const Bills = () => {
   const [dueDate, setDueDate] = useState(new Date().toISOString().split('T')[0]);
   const [status, setStatus] = useState("pending");
   const [recurrent, setRecurrent] = useState(false);
-  const [frequency, setFrequency] = useState("monthly");
+  const [frequency, setFrequency] = useState<'monthly' | 'weekly' | 'yearly'>('monthly');
 
   useEffect(() => {
     const loadBills = async () => {
@@ -42,9 +41,9 @@ const Bills = () => {
       description,
       amount: parseFloat(amount),
       due_date: dueDate,
-      status,
+      status: status as 'pending' | 'paid',
       recurrent,
-      frequency: recurrent ? frequency : null
+      frequency: recurrent ? frequency as 'monthly' | 'weekly' | 'yearly' : null
     };
 
     const createdBill = await billService.createBill(newBill);
@@ -54,7 +53,7 @@ const Bills = () => {
       setDueDate(new Date().toISOString().split('T')[0]);
       setStatus("pending");
       setRecurrent(false);
-      setFrequency("monthly");
+      setFrequency('monthly');
       
       // Reload bills list
       const updatedBills = await billService.getBills();
@@ -200,7 +199,7 @@ const Bills = () => {
                         id="frequency"
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         value={frequency}
-                        onChange={(e) => setFrequency(e.target.value)}
+                        onChange={(e) => setFrequency(e.target.value as 'monthly' | 'weekly' | 'yearly')}
                       >
                         <option value="monthly">Mensal</option>
                         <option value="weekly">Semanal</option>

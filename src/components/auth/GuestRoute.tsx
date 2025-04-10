@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -18,6 +17,7 @@ const GuestRoute = ({ children }: GuestRouteProps) => {
     );
   }
 
+  // Restaurando o redirecionamento para o dashboard
   if (user) {
     return <Navigate to="/dashboard" />;
   }

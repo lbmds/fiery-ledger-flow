@@ -1,34 +1,60 @@
-
 import { supabase, Transaction } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 
 export const transactionService = {
   async getTransactions(): Promise<Transaction[]> {
     try {
+      // Verificar se há um usuário autenticado
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      const userId = session.session.user.id;
+
       const { data, error } = await supabase
         .from('transactions')
-        .select('*, categories(name), accounts(name)')
+        .select('*')
+        .eq('user_id', userId)
         .order('date', { ascending: false });
 
       if (error) throw error;
       
-      // Transform data to match our frontend model
-      const transformedData = data?.map(item => ({
-        id: item.id,
-        user_id: item.user_id,
-        amount: item.amount,
-        date: item.date,
-        description: item.description,
-        type: item.type,
-        category_id: item.category_id,
-        categoryName: item.categories?.name,
-        account_id: item.account_id,
-        accountName: item.accounts?.name,
-        status: item.status,
-        created_at: item.created_at
-      }));
+      // Carregar nomes das categorias e contas
+      const transactionsWithDetails = [] as Transaction[];
       
-      return transformedData || [];
+      for (const tx of data) {
+        let categoryName = null;
+        let accountName = null;
+
+        // Carregar nome da categoria
+        if (tx.category_id) {
+          const { data: categoryData } = await supabase
+            .from('categories')
+            .select('name')
+            .eq('id', tx.category_id)
+            .single();
+          categoryName = categoryData?.name || null;
+        }
+
+        // Carregar nome da conta
+        if (tx.account_id) {
+          const { data: accountData } = await supabase
+            .from('accounts')
+            .select('name')
+            .eq('id', tx.account_id)
+            .single();
+          accountName = accountData?.name || null;
+        }
+
+        transactionsWithDetails.push({
+          ...tx,
+          categoryName,
+          accountName
+        });
+      }
+      
+      return transactionsWithDetails;
     } catch (error) {
       console.error('Error fetching transactions:', error);
       toast({
@@ -42,9 +68,20 @@ export const transactionService = {
 
   async createTransaction(transaction: Omit<Transaction, 'id' | 'user_id' | 'created_at'>): Promise<Transaction | null> {
     try {
+      // Obter o ID do usuário atual
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      const userId = session.session.user.id;
+
       const { data, error } = await supabase
         .from('transactions')
-        .insert([transaction])
+        .insert([{
+          ...transaction,
+          user_id: userId
+        }])
         .select()
         .single();
 
@@ -67,11 +104,14 @@ export const transactionService = {
     }
   },
 
-  async updateTransaction(id: string, updates: Partial<Transaction>): Promise<Transaction | null> {
+  async updateTransaction(id: number, updates: Partial<Transaction>): Promise<Transaction | null> {
     try {
+      // Removendo o id dos updates, pois ele não deve ser alterado
+      const { id: _, ...updatesWithoutId } = updates;
+      
       const { data, error } = await supabase
         .from('transactions')
-        .update(updates)
+        .update(updatesWithoutId)
         .eq('id', id)
         .select()
         .single();
@@ -95,7 +135,7 @@ export const transactionService = {
     }
   },
 
-  async deleteTransaction(id: string): Promise<boolean> {
+  async deleteTransaction(id: number): Promise<boolean> {
     try {
       const { error } = await supabase
         .from('transactions')

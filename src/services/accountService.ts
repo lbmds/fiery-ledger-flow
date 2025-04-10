@@ -1,16 +1,43 @@
-
 import { supabase, Account } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 
 export const accountService = {
   async getAccounts(): Promise<Account[]> {
     try {
+      // Verificar se há um usuário autenticado
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user) {
+        console.error("Usuário não autenticado");
+        throw new Error("Usuário não autenticado");
+      }
+
+      const userId = session.session.user.id;
+      console.log("User ID:", userId);
+
+      // Verificar se a tabela existe
+      const { error: tableError } = await supabase
+        .from('accounts')
+        .select('count')
+        .limit(1);
+      
+      if (tableError) {
+        console.error("Erro ao verificar tabela accounts:", tableError);
+        throw tableError;
+      }
+
+      // Buscar as contas do usuário
       const { data, error } = await supabase
         .from('accounts')
         .select('*')
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erro ao buscar contas:", error);
+        throw error;
+      }
+      
+      console.log("Contas recuperadas:", data);
       return data || [];
     } catch (error) {
       console.error('Error fetching accounts:', error);
@@ -25,9 +52,20 @@ export const accountService = {
 
   async createAccount(account: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<Account | null> {
     try {
+      // Verificar se há um usuário autenticado
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      const userId = session.session.user.id;
+
       const { data, error } = await supabase
         .from('accounts')
-        .insert([account])
+        .insert([{
+          ...account,
+          user_id: userId
+        }])
         .select()
         .single();
 
